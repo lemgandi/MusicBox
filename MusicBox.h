@@ -2,8 +2,6 @@
 #define MUSICBOX_H
 
 
-typedef enum tuneType {Start,Happy,Sad,ShaveandHaircut};
-
 typedef struct note
 {
    int pitch;
@@ -15,10 +13,15 @@ typedef struct note
 
 class MusicBox {
 public:
+   MusicBox();
+   MusicBox(int);
    void begin(int);
-   void playTune(tuneType);
+   void playTune(note *);
+   void playATune(int);
+   int loadATune(note *,int);
 private:
-   void playATune(note *);
+   int MusicOutPin;  // Pin where music appears.
+   note *musicLibrary[21];
 };
 
 

@@ -7,79 +7,58 @@
 #include <MusicBox.h>
 #include <pitches.h>
 
-static const note StartSong[] = {
-  {NOTE_C4,8},  {NOTE_D4,8},  {NOTE_E4,8},  {NOTE_G4,8},
-  {0,8},  {NOTE_E4,8},  {NOTE_G4,4},  {-1,-1}
-};
+#define CHS_DEBUG
 
-static const note FailSong[] = {
-   {NOTE_C6,4},   {NOTE_B5,4},   {NOTE_A5,4},   {NOTE_G5,4},
-   {NOTE_C4,2},
-   {-1,-1}
-};
-
-/*
- * Mostly for testing
- */
-static const note ShaveandHaircutSong[] =
+static const note _OopsSong[] =
 {
   {NOTE_C4,4},  {NOTE_G3,8},  {NOTE_G3,8},  {NOTE_A3,4},
   {NOTE_G3,4},  {0,4},  {NOTE_B3,4},  {NOTE_C4,4},
   {-1,-1}
 };
 
+
+#define MUSICLIBSIZE ( (sizeof(musicLibrary)/sizeof(note *)) - 1  )
+
+
+MusicBox::MusicBox()
+{
+   begin(-1);
+}
 /*
- * Play if we win
+ * Pass output pin to creator
  */
-static const note SuccessSong[] =  {
-{NOTE_F4,   8},{NOTE_E4,  16},{NOTE_D4,   8},{NOTE_CS4,  16},
-{NOTE_C4,   8},{NOTE_B3,  16},{NOTE_AS3,   8},{NOTE_A3,  16},
-{NOTE_G3,  16},{NOTE_A3,  16},{NOTE_AS3,  16},{NOTE_A3,   8},
-{NOTE_G3,  16},{NOTE_C4,   8},{0,   3,},{NOTE_C4,  12},
-{NOTE_A3,  16},{NOTE_A3,  16},{NOTE_A3,  16},{NOTE_GS3,   8},
-{NOTE_A3,  16},{NOTE_F4,   8},{NOTE_C4,  16},{NOTE_C4,   8},
-{NOTE_A3,  16},{NOTE_AS3,   8},{NOTE_AS3,  16},{NOTE_AS3,   8},
-{NOTE_C4,  16},{NOTE_D4,  4},{0,    12},{NOTE_AS3,  12},
-{NOTE_G3,  16},{NOTE_G3,  16},{NOTE_G3,  16},{NOTE_FS3,   8},
-{NOTE_G3,  16},{NOTE_E4,   8},{NOTE_D4,  16},{NOTE_D4,   8},
-{NOTE_AS3,  16},{NOTE_A3,   8},{NOTE_A3,  16},{NOTE_A3,   8},
-{NOTE_AS3,  16},{NOTE_C4,  4},{0,  12},{NOTE_C4,  12},
-{NOTE_A3,  16},{NOTE_A3,  16},{NOTE_A3,  16},{NOTE_GS3,   8},
-{NOTE_A3,  16},{NOTE_A4,   8},{NOTE_F4,  16},{NOTE_F4,   8},
-{NOTE_C4,  16},{NOTE_B3,   8},{NOTE_G4,  16},{NOTE_G4,   8},
-{NOTE_G4,  16},{NOTE_G4,  4},{0,  16},{NOTE_G4,  12},
-{NOTE_E4,  17},{NOTE_G4,  17},{NOTE_G4,  17},{NOTE_FS4,   8},
-{NOTE_G4,  12},{NOTE_D4,  17},{NOTE_G4,  17}, {NOTE_G4,  17},
-{NOTE_FS4,   8},{NOTE_G4,  16},{NOTE_C4,   8},{ NOTE_B3,  16},
-{NOTE_C4,   8},{NOTE_B3,  16},{NOTE_C4,   8},{0,1},
-{-1,-1}
-};
-static int MusicOutPin;
+MusicBox::MusicBox(int thepin)
+{
+   begin(thepin);   
+}
+/*
+ * Load a tune into the music box for future reference
+ */
+int MusicBox::loadATune(note *thesong, int thePlace)
+{
+   boolean retval=true; //retval false means a trouble happened.
+   if((thePlace < 0) || (thePlace > MUSICLIBSIZE))
+      retval=false;
+   if(true == retval) {
+      musicLibrary[thePlace+1]=thesong;
+   }
+}
 
 /*
  * Public interface play
  */
-void MusicBox::playTune(tuneType theTune)
+void MusicBox::playATune(int tuneIdx)
 {
-   switch(theTune) {
-      case Start:
-         playATune(StartSong);
-	 break;
-      case Happy:
-         playATune(SuccessSong);
-	 break;
-      case Sad:
-         playATune(FailSong);
-	 break;
-      default: // ShaveandHaircut
-         playATune(ShaveandHaircutSong);
-	 break;
-   }
+   if((tuneIdx < MUSICLIBSIZE) && (tuneIdx >= 0))
+      playTune(musicLibrary[tuneIdx+1]);
+   else
+      playTune(musicLibrary[0]);
 }
+
 /*
- * Actually play the tune
+ * Actually play a tune (e.g. a series of notes)
  */
-void MusicBox::playATune(note *theTune)
+void MusicBox::playTune(note *theTune)
 {
   int thePause;
   
@@ -95,6 +74,9 @@ void MusicBox::playATune(note *theTune)
  */
 void MusicBox::begin(int thePin)
 {
-   pinMode(thePin,OUTPUT);
-   MusicOutPin=thePin;
+   if(thePin > 0) {
+      pinMode(thePin,OUTPUT);
+      MusicOutPin=thePin;
+   }
+   musicLibrary[0]=_OopsSong;
 }
