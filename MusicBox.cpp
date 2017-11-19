@@ -1,5 +1,22 @@
 /*
  * Methods and statics for the MusicBox singleton object
+ * Copyright(c) Charles Shapiro November 2017
+
+This file is part of MusicBox.
+
+    MusicBox is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    MusicBox is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with MusicBox.  If not, see <http://www.gnu.org/licenses/>.
+
  */
 
 #include "Arduino.h"
@@ -49,7 +66,7 @@ int MusicBox::loadATune(note *thesong, int thePlace)
  */
 void MusicBox::playATune(int tuneIdx)
 {
-   if((tuneIdx < MUSICLIBSIZE) && (tuneIdx >= 0))
+   if((tuneIdx < MUSICLIBSIZE) && (tuneIdx >= 0) && (musicLibrary[tuneIdx]) )
       playTune(musicLibrary[tuneIdx+1]);
    else
       playTune(musicLibrary[0]);
@@ -78,5 +95,6 @@ void MusicBox::begin(int thePin)
       pinMode(thePin,OUTPUT);
       MusicOutPin=thePin;
    }
+   memset(musicLibrary,0,sizeof(musicLibrary));
    musicLibrary[0]=_OopsSong;
 }
