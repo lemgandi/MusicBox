@@ -28,6 +28,6 @@ void loadATune(note *tune,int slot) -- Load a tune into the music box at slot. T
 void playATune(int slot)  -- Play the tune at the given slot
 void playTune(note *)  -- Play a given tune
 
-If you attempt to play a tune at a slot outside of the tune library (e.g. slot -1 or slot 22), the
-music box will play "Shave and a Hair Cut" instead.
+If you attempt to play a tune at a slot outside of the tune library (e.g. slot -1 or slot 22), or
+an empty (un-loaded) slot, the music box will play "Shave and a Hair Cut" instead.
 
