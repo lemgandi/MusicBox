@@ -26,7 +26,7 @@ This file is part of MusicBox.
 
 #define CHS_DEBUG
 
-static const note _OopsSong[] =
+static note _OopsSong[] =
 {
   {NOTE_C4,4},  {NOTE_G3,8},  {NOTE_G3,8},  {NOTE_A3,4},
   {NOTE_G3,4},  {0,4},  {NOTE_B3,4},  {NOTE_C4,4},
